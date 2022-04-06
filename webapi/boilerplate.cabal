@@ -19,8 +19,6 @@ library
       Boilerplate.Database
       Boilerplate.HealthChecks.Api
       Boilerplate.Logging
-      Boilerplate.Users.Password
-      Boilerplate.Users.Username
   other-modules:
       Paths_boilerplate
   hs-source-dirs:
@@ -42,7 +40,6 @@ library
     , base >=4.7 && <5
     , bytestring
     , directory
-    , email-validate
     , envparse
     , exceptions
     , filepath
@@ -52,7 +49,6 @@ library
     , load-env
     , mtl
     , openapi3
-    , password
     , postgresql-simple
     , resource-pool
     , servant
@@ -95,8 +91,6 @@ test-suite boilerplate-test
   main-is: Main.hs
   other-modules:
       Boilerplate.HealthChecks.ApiSpec
-      Boilerplate.Users.PasswordSpec
-      Boilerplate.Users.UserName
       Spec
       TestApp
       TestApp.Database
@@ -116,22 +110,17 @@ test-suite boilerplate-test
       TypeOperators
   ghc-options: -Weverything -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missed-specialisations -Wno-missing-deriving-strategies -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-monomorphism-restriction -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
-    , base >=4.7 && <5
+      base >=4.7 && <5
     , boilerplate
     , bytestring
     , containers
-    , hedgehog
     , hspec
-    , hspec-hedgehog
     , http-client
     , mtl
     , postgres-options
-    , streaming-commons
     , text
     , tmp-postgres
     , typed-process
     , unliftio
-    , wai
     , warp
   default-language: Haskell2010

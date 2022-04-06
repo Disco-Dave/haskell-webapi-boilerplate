@@ -37,7 +37,6 @@ library:
     - aeson
     - bytestring
     - directory
-    - email-validate
     - envparse
     - exceptions
     - filepath
@@ -47,7 +46,6 @@ library:
     - load-env
     - mtl
     - openapi3
-    - password
     - postgresql-simple
     - resource-pool
     - servant
@@ -81,20 +79,15 @@ tests:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - aeson
       - boilerplate
       - bytestring
       - containers
-      - hedgehog
       - hspec
-      - hspec-hedgehog
       - http-client
       - mtl
       - postgres-options
-      - streaming-commons
       - text
       - tmp-postgres
       - typed-process
       - unliftio
-      - wai
       - warp
