@@ -46,6 +46,7 @@ library:
     - load-env
     - mtl
     - openapi3
+    - password
     - postgresql-simple
     - resource-pool
     - servant
@@ -82,7 +83,9 @@ tests:
       - boilerplate
       - bytestring
       - containers
+      - hedgehog
       - hspec
+      - hspec-hedgehog
       - http-client
       - mtl
       - postgres-options

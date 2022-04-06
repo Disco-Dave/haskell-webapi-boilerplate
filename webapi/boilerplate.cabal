@@ -19,6 +19,7 @@ library
       Boilerplate.Database
       Boilerplate.HealthChecks.Api
       Boilerplate.Logging
+      Boilerplate.Users.Password
   other-modules:
       Paths_boilerplate
   hs-source-dirs:
@@ -49,6 +50,7 @@ library
     , load-env
     , mtl
     , openapi3
+    , password
     , postgresql-simple
     , resource-pool
     , servant
@@ -91,6 +93,7 @@ test-suite boilerplate-test
   main-is: Main.hs
   other-modules:
       Boilerplate.HealthChecks.ApiSpec
+      Boilerplate.Users.PasswordSpec
       Spec
       TestApp
       TestApp.Database
@@ -114,7 +117,9 @@ test-suite boilerplate-test
     , boilerplate
     , bytestring
     , containers
+    , hedgehog
     , hspec
+    , hspec-hedgehog
     , http-client
     , mtl
     , postgres-options
