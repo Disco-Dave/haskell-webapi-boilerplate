@@ -42,8 +42,7 @@ migrate (DatabaseSocketPath socketPath) (DatabaseUrl url) (WebserverUserPassword
                )
              ]
       command = Process.proc "../scripts/sqlx.sh" ["migrate", "run"]
-   in void . Process.readProcess_ $
-        Process.setEnv processEnv command
+   in void . Process.readProcess_ $ Process.setEnv processEnv command
 
 withDatabase :: (DatabaseUrl -> IO a) -> IO a
 withDatabase use = do

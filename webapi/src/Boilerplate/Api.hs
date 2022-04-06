@@ -60,5 +60,5 @@ start ApiConfig{..} = do
           Warp.defaultSettings
             & Warp.setBeforeMainLoop beforeMainLoop
             & Warp.setPort port
-            & Warp.setOnException (\_ _ -> pure ())
+            & Warp.setOnException (\_ _ -> pure ()) -- omit logging because middleware should have done this already
      in Warp.runSettings settings application
