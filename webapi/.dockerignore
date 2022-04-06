@@ -1,0 +1,4 @@
+*.cabal
+.stack-work
+dist-newstyle
+test

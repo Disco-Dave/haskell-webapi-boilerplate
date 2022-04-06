@@ -1,0 +1,100 @@
+name: boilerplate
+version: 0.1.0.0
+
+ghc-options:
+  - -Weverything
+  - -Wno-all-missed-specialisations
+  - -Wno-implicit-prelude
+  - -Wno-missed-specialisations
+  - -Wno-missing-deriving-strategies
+  - -Wno-missing-exported-signatures
+  - -Wno-missing-import-lists
+  - -Wno-missing-local-signatures
+  - -Wno-missing-safe-haskell-mode
+  - -Wno-monomorphism-restriction
+  - -Wno-prepositive-qualified-module
+  - -Wno-safe
+  - -Wno-unsafe
+
+default-extensions:
+  - DataKinds
+  - FlexibleContexts
+  - GeneralizedNewtypeDeriving
+  - MultiParamTypeClasses
+  - NamedFieldPuns
+  - OverloadedStrings
+  - RecordWildCards
+  - StrictData
+  - TypeApplications
+  - TypeOperators
+
+dependencies:
+  - base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+    - aeson
+    - bytestring
+    - directory
+    - email-validate
+    - envparse
+    - exceptions
+    - filepath
+    - katip
+    - katip-wai
+    - lens
+    - load-env
+    - mtl
+    - openapi3
+    - password
+    - postgresql-simple
+    - resource-pool
+    - servant
+    - servant-openapi3
+    - servant-server
+    - servant-swagger-ui
+    - text
+    - time
+    - transformers
+    - unliftio
+    - wai
+    - warp
+
+executables:
+  boilerplate:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - boilerplate
+
+tests:
+  boilerplate-test:
+    main: Main.hs
+    source-dirs: test
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - aeson
+      - boilerplate
+      - bytestring
+      - containers
+      - hedgehog
+      - hspec
+      - hspec-hedgehog
+      - http-client
+      - mtl
+      - postgres-options
+      - streaming-commons
+      - text
+      - tmp-postgres
+      - typed-process
+      - unliftio
+      - wai
+      - warp
