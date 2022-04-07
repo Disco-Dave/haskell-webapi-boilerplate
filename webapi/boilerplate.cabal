@@ -20,6 +20,7 @@ library
       Boilerplate.HealthChecks.Api
       Boilerplate.Logging
       Boilerplate.Users.Password
+      Boilerplate.Users.Username
   other-modules:
       Paths_boilerplate
   hs-source-dirs:
@@ -94,6 +95,7 @@ test-suite boilerplate-test
   other-modules:
       Boilerplate.HealthChecks.ApiSpec
       Boilerplate.Users.PasswordSpec
+      Boilerplate.Users.UsernameSpec
       Spec
       TestApp
       TestApp.Database

@@ -83,6 +83,7 @@ tests:
       - boilerplate
       - bytestring
       - containers
+      - containers
       - hedgehog
       - hspec
       - hspec-hedgehog
