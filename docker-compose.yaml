@@ -21,7 +21,7 @@ services:
   initialize_database:
     build: ./database
     depends_on:
-      - postgres
+      - database
     volumes:
       - type: bind
         source: ./database/migrations
@@ -40,7 +40,7 @@ services:
       - target: 80
         published: 4000
     depends_on:
-      - postgres
+      - database
     env_file:
       - .env
     environment:
