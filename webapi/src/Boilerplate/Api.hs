@@ -19,11 +19,13 @@ import qualified Network.Wai.Handler.Warp as Warp
 import Servant (hoistServer, serve)
 import qualified UnliftIO
 
+
 data ApiConfig = ApiConfig
   { useSwagger :: Bool
   , port :: Warp.Port
   }
   deriving (Show, Eq)
+
 
 makeWaiApplication :: Bool -> App Wai.Application
 makeWaiApplication useSwagger = do
@@ -42,6 +44,7 @@ makeWaiApplication useSwagger = do
     if useSwagger
       then toApplication (Proxy @Routes.ApiWithSwagger) Routes.serverWithSwagger
       else toApplication (Proxy @Routes.Api) Routes.server
+
 
 start :: ApiConfig -> App ()
 start ApiConfig{..} = do

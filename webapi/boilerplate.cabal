@@ -24,13 +24,17 @@ library
   hs-source-dirs:
       src
   default-extensions:
+      AllowAmbiguousTypes
       DataKinds
+      DerivingVia
       FlexibleContexts
       GeneralizedNewtypeDeriving
       MultiParamTypeClasses
       NamedFieldPuns
+      NumericUnderscores
       OverloadedStrings
       RecordWildCards
+      ScopedTypeVariables
       StrictData
       TypeApplications
       TypeOperators
@@ -70,13 +74,17 @@ executable boilerplate
   hs-source-dirs:
       app
   default-extensions:
+      AllowAmbiguousTypes
       DataKinds
+      DerivingVia
       FlexibleContexts
       GeneralizedNewtypeDeriving
       MultiParamTypeClasses
       NamedFieldPuns
+      NumericUnderscores
       OverloadedStrings
       RecordWildCards
+      ScopedTypeVariables
       StrictData
       TypeApplications
       TypeOperators
@@ -98,13 +106,17 @@ test-suite boilerplate-test
   hs-source-dirs:
       test
   default-extensions:
+      AllowAmbiguousTypes
       DataKinds
+      DerivingVia
       FlexibleContexts
       GeneralizedNewtypeDeriving
       MultiParamTypeClasses
       NamedFieldPuns
+      NumericUnderscores
       OverloadedStrings
       RecordWildCards
+      ScopedTypeVariables
       StrictData
       TypeApplications
       TypeOperators
@@ -114,10 +126,12 @@ test-suite boilerplate-test
     , boilerplate
     , bytestring
     , containers
+    , exceptions
     , hspec
     , http-client
     , mtl
     , postgres-options
+    , retry
     , text
     , tmp-postgres
     , typed-process

@@ -1,8 +1,9 @@
 module Boilerplate.HealthChecks.ApiSpec (spec) where
 
 import qualified Network.HTTP.Client as Http
-import Test.Hspec
+import Test.Hspec (Spec, aroundAll, it, runIO, shouldBe)
 import TestApp (TestApp (..), withTestApp)
+
 
 spec :: Spec
 spec = do
@@ -15,7 +16,7 @@ spec = do
         let status = fromEnum $ Http.responseStatus response
          in status `shouldBe` 204
 
-  around withTestApp $ do
+  aroundAll withTestApp $ do
     it "GET /health-checks responds with 204" $ \TestApp{port} ->
       responds204 $ "http://localhost:" <> show port <> "/health-checks"
 

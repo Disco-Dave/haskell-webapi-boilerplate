@@ -22,20 +22,24 @@ import Servant (
   type (:>),
  )
 
+
 type GetIndex =
   Summary "Is this API reachable?"
     :> Description "Allows you to check if the API is reachable. Hardcoded to return 204."
     :> GetNoContent
 
+
 getIndex :: ApiApp NoContent
 getIndex =
   pure NoContent
+
 
 type GetDatabases =
   Summary "Can the API communicate with our database?"
     :> Description "Allows you to check if the API can communicate with the database. Hardcoded to return 204."
     :> "databases"
     :> GetNoContent
+
 
 getDatabases :: ApiApp NoContent
 getDatabases = do
@@ -45,8 +49,10 @@ getDatabases = do
           liftIO $ Postgres.query_ @(Postgres.Only Int) connection query
   pure NoContent
 
+
 type Api =
   GetIndex :<|> GetDatabases
+
 
 server :: ServerT Api ApiApp
 server =

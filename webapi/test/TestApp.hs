@@ -15,10 +15,12 @@ import Control.Monad.IO.Class (liftIO)
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified TestApp.Database as Database
 
+
 data TestApp = TestApp
   { appData :: AppData
   , port :: Warp.Port
   }
+
 
 withAppData :: (AppData -> IO a) -> IO a
 withAppData =
@@ -44,6 +46,7 @@ withAppData =
         { Config.database = databaseConfig
         , Config.logging = loggingConfig
         }
+
 
 withTestApp :: (TestApp -> IO a) -> IO a
 withTestApp =

@@ -14,6 +14,7 @@ import qualified Boilerplate.Logging as Logging
 import Control.Monad.Cont (ContT (ContT, runContT))
 import qualified Katip
 
+
 withAppData :: Config -> (AppData -> IO a) -> IO a
 withAppData config =
   runContT $ do
@@ -22,10 +23,12 @@ withAppData config =
 
     pure $ AppData{..}
 
+
 run :: Config -> App a -> IO a
 run config app =
   withAppData config $ \appData ->
     App.runApp appData (Katip.logExceptionM app Katip.EmergencyS)
+
 
 start :: Config -> IO ()
 start config =

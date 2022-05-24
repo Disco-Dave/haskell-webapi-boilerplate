@@ -20,13 +20,16 @@ import qualified Servant
 import UnliftIO (MonadUnliftIO)
 import qualified UnliftIO
 
+
 data AppData = AppData
   { loggingData :: LoggingData
   , connectionPool :: ConnectionPool
   }
 
+
 instance HasConnectionPool AppData where
   getConnectionPool = connectionPool
+
 
 newtype App a = App
   { fromApp :: ReaderT AppData IO a
@@ -43,13 +46,16 @@ newtype App a = App
     , MonadCatch
     )
 
+
 runApp :: AppData -> App a -> IO a
 runApp appData (App app) =
   runReaderT app appData
 
+
 instance Katip.Katip App where
   getLogEnv =
     asks (Logging.logEnv . loggingData)
+
 
   localLogEnv f (App m) =
     let update appData =
@@ -58,9 +64,11 @@ instance Katip.Katip App where
            in appData{loggingData = newLoggingData}
      in App (local update m)
 
+
 instance Katip.KatipContext App where
   getKatipContext =
     asks (Logging.context . loggingData)
+
 
   localKatipContext f (App m) =
     let update appData =
@@ -69,8 +77,10 @@ instance Katip.KatipContext App where
            in appData{loggingData = newLoggingData}
      in App (local update m)
 
+
   getKatipNamespace =
     asks (Logging.namespace . loggingData)
+
 
   localKatipNamespace f (App m) =
     let update appData =
@@ -78,6 +88,7 @@ instance Katip.KatipContext App where
               newLoggingData = (loggingData appData){Logging.namespace = f oldNamespace}
            in appData{loggingData = newLoggingData}
      in App (local update m)
+
 
 newtype ApiApp a = ApiApp
   { fromApiApp :: App a
@@ -96,14 +107,17 @@ newtype ApiApp a = ApiApp
     , Katip.KatipContext
     )
 
+
 liftApp :: App a -> ApiApp a
 liftApp =
   coerce
+
 
 toHandler :: AppData -> ApiApp a -> Servant.Handler a
 toHandler appData (ApiApp app) =
   let unwrappedValue = UnliftIO.try $ runApp appData app
    in Servant.Handler $ ExceptT unwrappedValue
+
 
 instance MonadError Servant.ServerError ApiApp where
   throwError = UnliftIO.throwIO

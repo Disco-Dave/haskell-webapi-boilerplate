@@ -23,25 +23,30 @@ import qualified Database.PostgreSQL.Simple as Postgres
 import UnliftIO (MonadUnliftIO)
 import qualified UnliftIO
 
+
 newtype DatabaseUrl = DatabaseUrl
   { fromDatabaseUrl :: ByteString
   }
   deriving (Show, Eq, IsString) via ByteString
+
 
 newtype NumberOfStripes = NumberOfStripes
   { fromNumberOfStripes :: Int
   }
   deriving (Show, Eq, Num, Read) via Int
 
+
 newtype UnusedConnectionTimeout = UnusedConnectionTimeout
   { fromUnusedConnectionTimeout :: NominalDiffTime
   }
   deriving (Show, Eq, Num, Read) via NominalDiffTime
 
+
 newtype MaxConnectionsPerStripe = MaxConnectionsPerStripe
   { fromMaxConnectionsPerStripe :: Int
   }
   deriving (Show, Eq, Num, Read) via Int
+
 
 data DatabaseConfig = DatabaseConfig
   { url :: DatabaseUrl
@@ -50,7 +55,9 @@ data DatabaseConfig = DatabaseConfig
   , maxConnectionsPerStripe :: MaxConnectionsPerStripe
   }
 
+
 newtype ConnectionPool = ConnectionPool (Pool Postgres.Connection)
+
 
 withConnectionPool :: DatabaseConfig -> (ConnectionPool -> IO a) -> IO a
 withConnectionPool DatabaseConfig{..} use =
@@ -63,8 +70,10 @@ withConnectionPool DatabaseConfig{..} use =
           (coerce maxConnectionsPerStripe)
    in UnliftIO.bracket makePool Pool.destroyAllResources (use . ConnectionPool)
 
+
 class HasConnectionPool r where
   getConnectionPool :: r -> ConnectionPool
+
 
 withConnection :: (HasConnectionPool r, MonadReader r m, MonadUnliftIO m) => (Postgres.Connection -> m a) -> m a
 withConnection use = do

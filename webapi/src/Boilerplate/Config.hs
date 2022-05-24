@@ -18,11 +18,13 @@ import qualified System.Directory as Directory
 import System.FilePath ((</>))
 import qualified System.FilePath as FilePath
 
+
 data Config = Config
   { api :: ApiConfig
   , logging :: LoggingConfig
   , database :: DatabaseConfig
   }
+
 
 parseApi :: Env.Parser Env.Error ApiConfig
 parseApi =
@@ -30,6 +32,7 @@ parseApi =
     ApiConfig
       <$> Env.switch "USE_SWAGGER" (Env.help "When set to true enables swagger ui")
       <*> Env.var Env.auto "PORT" (Env.help "Sets the port the http server runs on")
+
 
 parseLogging :: Env.Parser Env.Error LoggingConfig
 parseLogging =
@@ -58,7 +61,9 @@ parseLogging =
           <*> Env.var verbosity "VERBOSITY" (Env.help "The verbosity of the logs (V0,V1,V2,V3)")
           <*> Env.var (Env.nonempty <=< Env.str) "ENVIRONMENT" (Env.help "Name of the environment to describe this instance in the logs")
           <*> Env.switch "USE_COLOR" (Env.help "Enables color for different severities")
+          <*> Env.switch "USE_BRACKET" (Env.help "Use bracket syntax instead of json format")
           <*> pure False
+
 
 parseDatabase :: Env.Parser Env.Error DatabaseConfig
 parseDatabase =
@@ -69,6 +74,7 @@ parseDatabase =
       <*> fmap (UnusedConnectionTimeout . secondsToNominalDiffTime) (Env.var Env.auto "UNUSED_CONNECTION_TIMEOUT" (Env.help "How long in seconds a unused connection is kept open."))
       <*> Env.var Env.auto "MAX_CONNECTIONS_PER_STRIPE" (Env.help "Total number of connections per stripes")
 
+
 parseConfig :: IO Config
 parseConfig =
   Env.parse (Env.header "boilerplate") . Env.prefixed "BOILERPLATE_" $
@@ -76,6 +82,7 @@ parseConfig =
       <$> parseApi
       <*> parseLogging
       <*> parseDatabase
+
 
 applyDotfiles :: IO ()
 applyDotfiles = do
@@ -89,6 +96,7 @@ applyDotfiles = do
     filter (".env." `List.isPrefixOf`) filesInProjectRoot
 
   loadFile ".env"
+
 
 fromEnvironment :: IO Config
 fromEnvironment =

@@ -8,20 +8,24 @@ import Control.Exception (bracket)
 import qualified Katip
 import System.IO (stdout)
 
+
 data LoggingConfig = LoggingConfig
   { minSeverity :: Katip.Severity
   , verbosity :: Katip.Verbosity
   , environment :: Katip.Environment
   , useColor :: Bool
+  , useBracket :: Bool
   , disableLogging :: Bool
   }
   deriving (Show, Eq)
+
 
 data LoggingData = LoggingData
   { namespace :: Katip.Namespace
   , context :: Katip.LogContexts
   , logEnv :: Katip.LogEnv
   }
+
 
 withLoggingData :: LoggingConfig -> (LoggingData -> IO a) -> IO a
 withLoggingData LoggingConfig{..} use =
@@ -33,7 +37,7 @@ withLoggingData LoggingConfig{..} use =
           else do
             scribe <-
               Katip.mkHandleScribeWithFormatter
-                Katip.jsonFormat
+                (if useBracket then Katip.bracketFormat else Katip.jsonFormat)
                 (Katip.ColorLog useColor)
                 stdout
                 (Katip.permitItem minSeverity)
@@ -48,5 +52,3 @@ withLoggingData LoggingConfig{..} use =
                 , logEnv = logEnv
                 }
          in use loggingData
-
-

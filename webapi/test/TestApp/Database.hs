@@ -3,7 +3,10 @@ module TestApp.Database (
 ) where
 
 import Boilerplate.Database (DatabaseUrl (DatabaseUrl))
+import Control.Exception (Exception, IOException)
 import Control.Monad (void)
+import Control.Monad.Catch (Handler (Handler))
+import qualified Control.Retry as Retry
 import qualified Data.ByteString.Char8 as Char8
 import Data.Coerce (coerce)
 import qualified Data.Map.Strict as Map
@@ -18,9 +21,12 @@ import System.Environment (getEnvironment)
 import qualified System.Process.Typed as Process
 import qualified UnliftIO
 
+
 newtype WebserverUserPassword = WebserverUserPassword Text
 
+
 newtype DatabaseSocketPath = DatabaseSocketPath String
+
 
 migrate :: DatabaseSocketPath -> DatabaseUrl -> WebserverUserPassword -> IO ()
 migrate (DatabaseSocketPath socketPath) (DatabaseUrl url) (WebserverUserPassword password) = do
@@ -44,6 +50,7 @@ migrate (DatabaseSocketPath socketPath) (DatabaseUrl url) (WebserverUserPassword
       command = Process.proc "../scripts/sqlx.sh" ["migrate", "run"]
    in void . Process.readProcess_ $ Process.setEnv processEnv command
 
+
 withDatabase :: (DatabaseUrl -> IO a) -> IO a
 withDatabase use = do
   let tempConfig =
@@ -58,42 +65,54 @@ withDatabase use = do
                   }
           }
 
-  result <- PostgresTemp.withConfig tempConfig $ \db ->
-    let options = PostgresTemp.toConnectionOptions db
+  let retryPolicy =
+        Retry.limitRetriesByCumulativeDelay 32_000 $
+          Retry.exponentialBackoff 1_000
 
-        selectOption defaultValue select =
-          fromMaybe defaultValue . getLast $ select options
+      exceptionHandlers =
+        let restartFor :: forall e a. Exception e => a -> Handler IO Bool
+            restartFor _ = Handler @_ @_ @e $ \_ -> pure True
+         in [ restartFor @PostgresTemp.StartError
+            , restartFor @IOException
+            ]
 
-        socketPath =
-          DatabaseSocketPath $ selectOption "" PostgresOptions.host
+  Retry.recovering retryPolicy exceptionHandlers $ \_ -> do
+    result <- PostgresTemp.withConfig tempConfig $ \db ->
+      let options = PostgresTemp.toConnectionOptions db
 
-        privelgedUrl =
-          let host = selectOption "" PostgresOptions.host
-              user = selectOption "" PostgresOptions.user
-              dbname = selectOption "" PostgresOptions.dbname
-              port = selectOption 0 PostgresOptions.port
-           in DatabaseUrl . Char8.pack . mconcat $
-                [ "postgresql://"
-                , dbname
-                , "?"
-                , "host=" <> host
-                , "&"
-                , "user=" <> user
-                , "&"
-                , "port=" <> show port
-                ]
+          selectOption defaultValue select =
+            fromMaybe defaultValue . getLast $ select options
 
-        password = WebserverUserPassword "password"
+          socketPath =
+            DatabaseSocketPath $ selectOption "" PostgresOptions.host
 
-        appUrl = do
-          let appOptions =
-                options
-                  { PostgresOptions.password = pure (Text.unpack $ coerce password)
-                  , PostgresOptions.user = pure "webserver"
-                  }
-           in DatabaseUrl $ PostgresOptions.toConnectionString appOptions
-     in migrate socketPath privelgedUrl password *> use appUrl
+          privelgedUrl =
+            let host = selectOption "" PostgresOptions.host
+                user = selectOption "" PostgresOptions.user
+                dbname = selectOption "" PostgresOptions.dbname
+                port = selectOption 0 PostgresOptions.port
+             in DatabaseUrl . Char8.pack . mconcat $
+                  [ "postgresql://"
+                  , dbname
+                  , "?"
+                  , "host=" <> host
+                  , "&"
+                  , "user=" <> user
+                  , "&"
+                  , "port=" <> show port
+                  ]
 
-  case result of
-    Left err -> UnliftIO.throwIO err
-    Right value -> pure value
+          password = WebserverUserPassword "password"
+
+          appUrl = do
+            let appOptions =
+                  options
+                    { PostgresOptions.password = pure (Text.unpack $ coerce password)
+                    , PostgresOptions.user = pure "webserver"
+                    }
+             in DatabaseUrl $ PostgresOptions.toConnectionString appOptions
+       in migrate socketPath privelgedUrl password *> use appUrl
+
+    case result of
+      Left err -> UnliftIO.throwIO err
+      Right value -> pure value

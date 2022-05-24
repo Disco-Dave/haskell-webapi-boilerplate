@@ -17,13 +17,17 @@ ghc-options:
   - -Wno-unsafe
 
 default-extensions:
+  - AllowAmbiguousTypes
   - DataKinds
+  - DerivingVia
   - FlexibleContexts
   - GeneralizedNewtypeDeriving
   - MultiParamTypeClasses
   - NamedFieldPuns
+  - NumericUnderscores
   - OverloadedStrings
   - RecordWildCards
+  - ScopedTypeVariables
   - StrictData
   - TypeApplications
   - TypeOperators
@@ -82,10 +86,12 @@ tests:
       - boilerplate
       - bytestring
       - containers
+      - exceptions
       - hspec
       - http-client
       - mtl
       - postgres-options
+      - retry
       - text
       - tmp-postgres
       - typed-process
