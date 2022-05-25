@@ -5,7 +5,7 @@ volumes:
 
 services:
   database:
-    image: postgres:14
+    image: postgres:13
     ports:
       - target: 5432
         published: 5000

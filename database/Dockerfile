@@ -1,4 +1,4 @@
-FROM rust:1.59-slim-buster AS builder
+FROM rust:1.61-slim-bullseye AS builder
 
 WORKDIR /build
 
@@ -6,17 +6,18 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && apt-get install -y binutils pkg-config libssl-dev
 
-RUN cargo install sqlx-cli --version 0.5.11 --no-default-features --features native-tls,postgres --root . \
+ARG SQLX_VERSION="0.5.13"
+RUN cargo install sqlx-cli --version "${SQLX_VERSION}" --no-default-features --features native-tls,postgres --root . \
   && strip -s /build/bin/sqlx
 
 
-FROM debian:buster-slim AS final
+FROM debian:bullseye-slim AS final
 
 WORKDIR /usr/local/etc/sqlx
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-  && apt-get install -y libpq-dev libssl-dev postgresql-client-11 \
+  && apt-get install -y libpq-dev libssl-dev postgresql-client-13 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 

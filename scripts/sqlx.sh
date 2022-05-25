@@ -2,15 +2,16 @@
 
 set -e
 
-SQLX_IMAGE_NAME="boilerplate-sqlx:0.5.11"
 
 REPO_ROOT="$(dirname "$(realpath "$0")" | xargs dirname)"
 eval "$("$REPO_ROOT/scripts/dotenv.sh" print)"
 
 cd "$REPO_ROOT/database"
 
+SQLX_IMAGE_NAME="boilerplate-sqlx:$BOILERPLATE_SQLX_VERSION"
+
 if [[ "$(docker images -q "$SQLX_IMAGE_NAME" 2> /dev/null)" == "" ]]; then
-  docker build -t "$SQLX_IMAGE_NAME" .
+  "$REPO_ROOT/scripts/build-sqlx.sh"
 fi
 
 ADDTIONAL_FLAGS=""
