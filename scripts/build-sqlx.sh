@@ -4,8 +4,6 @@ set -e
 
 REPO_ROOT="$(dirname "$(realpath "$0")" | xargs dirname)"
 
-eval "$("$REPO_ROOT/scripts/dotenv.sh" print)"
-
 cd "$REPO_ROOT/database"
 
 docker build \

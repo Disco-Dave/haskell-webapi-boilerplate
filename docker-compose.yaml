@@ -8,7 +8,7 @@ services:
     image: postgres:13
     ports:
       - target: 5432
-        published: 5000
+        published: 4000
     volumes:
       - type: volume
         source: database_data
@@ -38,11 +38,18 @@ services:
     build: ./webapi
     ports:
       - target: 80
-        published: 4000
+        published: 5000
     depends_on:
       - database
-    env_file:
-      - .env
     environment:
       BOILERPLATE_API_PORT: 80
+      BOILERPLATE_API_USE_SWAGGER: ${BOILERPLATE_API_USE_SWAGGER:-"true"}
+      BOILERPLATE_LOGGING_MIN_SEVERITY: ${BOILERPLATE_LOGGING_MIN_SEVERITY:-"debug"}
+      BOILERPLATE_LOGGING_VERBOSITY: ${BOILERPLATE_LOGGING_VERBOSITY:-"v3"}
+      BOILERPLATE_LOGGING_ENVIRONMENT: ${BOILERPLATE_LOGGING_ENVIRONMENT:-"local"}
+      BOILERPLATE_LOGGING_USE_COLOR: ${BOILERPLATE_LOGGING_USE_COLOR:-"true"}
+      BOILERPLATE_LOGGING_USE_BRACKET: ${BOILERPLATE_LOGGING_USE_BRACKET:-"true"}
       BOILERPLATE_DATABASE_URL: postgres://webserver@database:5432/boilerplate?password=password
+      BOILERPLATE_DATABASE_NUMBER_OF_STRIPES: ${BOILERPLATE_DATABASE_NUMBER_OF_STRIPES:-"4"}
+      BOILERPLATE_DATABASE_UNUSED_CONNECTION_TIMEOUT: ${BOILERPLATE_DATABASE_UNUSED_CONNECTION_TIMEOUT:-"60"}
+      BOILERPLATE_DATABASE_MAX_CONNECTIONS_PER_STRIPE: ${BOILERPLATE_DATABASE_MAX_CONNECTIONS_PER_STRIPE:-"5"}

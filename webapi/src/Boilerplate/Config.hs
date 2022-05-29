@@ -7,16 +7,11 @@ import Boilerplate.Api (ApiConfig (ApiConfig))
 import Boilerplate.Database (DatabaseConfig (DatabaseConfig), UnusedConnectionTimeout (UnusedConnectionTimeout))
 import Boilerplate.Logging (LoggingConfig (LoggingConfig))
 import Control.Monad ((<=<))
-import Data.Foldable (find, traverse_)
-import qualified Data.List as List
+import Data.Foldable (find)
 import qualified Data.Text as Text
 import Data.Time (secondsToNominalDiffTime)
 import qualified Env
 import qualified Katip
-import qualified LoadEnv
-import qualified System.Directory as Directory
-import System.FilePath ((</>))
-import qualified System.FilePath as FilePath
 
 
 data Config = Config
@@ -75,29 +70,10 @@ parseDatabase =
       <*> Env.var Env.auto "MAX_CONNECTIONS_PER_STRIPE" (Env.help "Total number of connections per stripes")
 
 
-parseConfig :: IO Config
-parseConfig =
+fromEnvironment :: IO Config
+fromEnvironment =
   Env.parse (Env.header "boilerplate") . Env.prefixed "BOILERPLATE_" $
     Config
       <$> parseApi
       <*> parseLogging
       <*> parseDatabase
-
-
-applyDotfiles :: IO ()
-applyDotfiles = do
-  projectRoot <- fmap FilePath.takeDirectory Directory.getCurrentDirectory
-
-  let loadFile path =
-        LoadEnv.loadEnvFrom (projectRoot </> path)
-
-  filesInProjectRoot <- Directory.listDirectory projectRoot
-  traverse_ LoadEnv.loadEnvFrom . List.sort $
-    filter (".env." `List.isPrefixOf`) filesInProjectRoot
-
-  loadFile ".env"
-
-
-fromEnvironment :: IO Config
-fromEnvironment =
-  applyDotfiles *> parseConfig

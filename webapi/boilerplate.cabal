@@ -40,28 +40,22 @@ library
       TypeOperators
   ghc-options: -Weverything -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missed-specialisations -Wno-missing-deriving-strategies -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-monomorphism-restriction -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe
   build-depends:
-      aeson
-    , base >=4.7 && <5
+      base >=4.7 && <5
     , bytestring
-    , directory
     , envparse
     , exceptions
-    , filepath
     , katip
     , katip-wai
     , lens
-    , load-env
     , mtl
     , openapi3
     , postgresql-simple
     , resource-pool
-    , servant
     , servant-openapi3
     , servant-server
     , servant-swagger-ui
     , text
     , time
-    , transformers
     , unliftio
     , wai
     , warp
