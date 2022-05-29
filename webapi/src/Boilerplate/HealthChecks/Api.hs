@@ -6,12 +6,11 @@ module Boilerplate.HealthChecks.Api (
 ) where
 
 import Boilerplate.App (ApiApp)
-import Boilerplate.Database (withConnection)
+import Boilerplate.Database (withPostgresConnection)
 
 import qualified Database.PostgreSQL.Simple as Postgres
 import Database.PostgreSQL.Simple.SqlQQ (sql)
 
-import Control.Monad.IO.Class (liftIO)
 import Servant (
   Description,
   GetNoContent,
@@ -44,9 +43,9 @@ type GetDatabases =
 getDatabases :: ApiApp NoContent
 getDatabases = do
   _ <-
-    let query = [sql| SELECT 1 |]
-     in withConnection $ \connection ->
-          liftIO $ Postgres.query_ @(Postgres.Only Int) connection query
+    withPostgresConnection $ \connection ->
+      Postgres.query_ @(Postgres.Only Int) connection [sql| SELECT 1 |]
+
   pure NoContent
 
 

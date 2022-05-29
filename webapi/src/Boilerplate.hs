@@ -19,8 +19,7 @@ withAppData :: Config -> (AppData -> IO a) -> IO a
 withAppData config =
   runContT $ do
     loggingData <- ContT $ Logging.withLoggingData (Config.logging config)
-    connectionPool <- ContT $ Database.withConnectionPool (Config.database config)
-
+    postgresConnectionPool <- ContT $ Database.withPostgresConnectionPool (Config.database config)
     pure $ AppData{..}
 
 

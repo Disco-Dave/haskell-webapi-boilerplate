@@ -7,7 +7,6 @@ module Boilerplate.App (
   toHandler,
 ) where
 
-import Boilerplate.Database (ConnectionPool, HasConnectionPool (..))
 import Boilerplate.Logging (LoggingData)
 import qualified Boilerplate.Logging as Logging
 import Control.Monad.Catch (MonadCatch, MonadThrow)
@@ -15,6 +14,8 @@ import Control.Monad.Except (ExceptT (ExceptT), MonadError (..))
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.Reader (MonadReader, ReaderT, asks, local, runReaderT)
 import Data.Coerce (coerce)
+import Data.Pool (Pool)
+import qualified Database.PostgreSQL.Simple as Postgres
 import qualified Katip
 import qualified Servant
 import UnliftIO (MonadUnliftIO)
@@ -23,12 +24,8 @@ import qualified UnliftIO
 
 data AppData = AppData
   { loggingData :: LoggingData
-  , connectionPool :: ConnectionPool
+  , postgresConnectionPool :: Pool Postgres.Connection
   }
-
-
-instance HasConnectionPool AppData where
-  getConnectionPool = connectionPool
 
 
 newtype App a = App
