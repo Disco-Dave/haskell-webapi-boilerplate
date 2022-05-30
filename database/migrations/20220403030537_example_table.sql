@@ -1,4 +1,4 @@
 -- Add migration script here
-CREATE TABLE example (
-  key bigserial PRIMARY KEY
-)
+create table example (
+    key bigserial primary key
+);

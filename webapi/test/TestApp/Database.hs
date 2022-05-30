@@ -25,11 +25,8 @@ import qualified UnliftIO
 newtype WebserverUserPassword = WebserverUserPassword Text
 
 
-newtype DatabaseSocketPath = DatabaseSocketPath String
-
-
-migrate :: DatabaseSocketPath -> DatabaseUrl -> WebserverUserPassword -> IO ()
-migrate (DatabaseSocketPath socketPath) (DatabaseUrl url) (WebserverUserPassword password) = do
+migrate :: DatabaseUrl -> WebserverUserPassword -> IO ()
+migrate (DatabaseUrl url) (WebserverUserPassword password) = do
   hostEnv <- getEnvironment
 
   let processEnv =
@@ -42,12 +39,8 @@ migrate (DatabaseSocketPath socketPath) (DatabaseUrl url) (WebserverUserPassword
                ( "BOILERPLATE_MIGRATE_WEBSERVER_USER_PASSWORD"
                , Text.unpack password
                )
-             ,
-               ( "BOILERPLATE_MIGRATE_DATABASE_SOCKET"
-               , socketPath
-               )
              ]
-      command = Process.proc "../scripts/sqlx.sh" ["migrate", "run"]
+      command = Process.proc "../database/migrate.sh" []
    in void . Process.readProcess_ $ Process.setEnv processEnv command
 
 
@@ -83,9 +76,6 @@ withDatabase use = do
           selectOption defaultValue select =
             fromMaybe defaultValue . getLast $ select options
 
-          socketPath =
-            DatabaseSocketPath $ selectOption "" PostgresOptions.host
-
           privelgedUrl =
             let host = selectOption "" PostgresOptions.host
                 user = selectOption "" PostgresOptions.user
@@ -111,7 +101,7 @@ withDatabase use = do
                     , PostgresOptions.user = pure "webserver"
                     }
              in DatabaseUrl $ PostgresOptions.toConnectionString appOptions
-       in migrate socketPath privelgedUrl password *> use appUrl
+       in migrate privelgedUrl password *> use appUrl
 
     case result of
       Left err -> UnliftIO.throwIO err

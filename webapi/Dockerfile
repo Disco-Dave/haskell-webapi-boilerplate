@@ -1,6 +1,6 @@
 FROM debian:bullseye-slim AS builder-base
 
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH=/root/.ghcup/bin:$PATH 
 
@@ -37,7 +37,7 @@ RUN strip -s /build/bin/boilerplate
 
 FROM debian:bullseye-slim AS final
 
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
