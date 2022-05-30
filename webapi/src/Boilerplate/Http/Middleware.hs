@@ -1,4 +1,4 @@
-module Boilerplate.Api.Middleware (
+module Boilerplate.Http.Middleware (
   apply,
 ) where
 

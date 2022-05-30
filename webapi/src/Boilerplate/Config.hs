@@ -3,8 +3,8 @@ module Boilerplate.Config (
   fromEnvironment,
 ) where
 
-import Boilerplate.Api (ApiConfig (ApiConfig))
 import Boilerplate.Database (DatabaseConfig (DatabaseConfig), UnusedConnectionTimeout (UnusedConnectionTimeout))
+import Boilerplate.Http (HttpConfig (HttpConfig))
 import Boilerplate.Logging (LoggingConfig (LoggingConfig))
 import Control.Monad ((<=<))
 import Data.Foldable (find)
@@ -15,16 +15,16 @@ import qualified Katip
 
 
 data Config = Config
-  { api :: ApiConfig
+  { http :: HttpConfig
   , logging :: LoggingConfig
   , database :: DatabaseConfig
   }
 
 
-parseApi :: Env.Parser Env.Error ApiConfig
-parseApi =
-  Env.prefixed "API_" $
-    ApiConfig
+parseHttp :: Env.Parser Env.Error HttpConfig
+parseHttp =
+  Env.prefixed "HTTP_" $
+    HttpConfig
       <$> Env.switch "USE_SWAGGER" (Env.help "When set to true enables swagger ui")
       <*> Env.var Env.auto "PORT" (Env.help "Sets the port the http server runs on")
 
@@ -74,6 +74,6 @@ fromEnvironment :: IO Config
 fromEnvironment =
   Env.parse (Env.header "boilerplate") . Env.prefixed "BOILERPLATE_" $
     Config
-      <$> parseApi
+      <$> parseHttp
       <*> parseLogging
       <*> parseDatabase

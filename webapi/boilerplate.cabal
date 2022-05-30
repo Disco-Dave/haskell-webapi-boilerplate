@@ -11,13 +11,13 @@ build-type:     Simple
 library
   exposed-modules:
       Boilerplate
-      Boilerplate.Api
-      Boilerplate.Api.Middleware
-      Boilerplate.Api.Routes
       Boilerplate.App
       Boilerplate.Config
       Boilerplate.Database
-      Boilerplate.HealthChecks.Api
+      Boilerplate.HealthChecks.Http
+      Boilerplate.Http
+      Boilerplate.Http.Middleware
+      Boilerplate.Http.Routes
       Boilerplate.Logging
   other-modules:
       Paths_boilerplate
@@ -92,7 +92,7 @@ test-suite boilerplate-test
   type: exitcode-stdio-1.0
   main-is: Main.hs
   other-modules:
-      Boilerplate.HealthChecks.ApiSpec
+      Boilerplate.HealthChecks.HttpSpec
       Spec
       TestApp
       TestApp.Database

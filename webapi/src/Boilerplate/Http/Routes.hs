@@ -1,12 +1,12 @@
-module Boilerplate.Api.Routes (
+module Boilerplate.Http.Routes (
   Api,
   server,
   ApiWithSwagger,
   serverWithSwagger,
 ) where
 
-import Boilerplate.App (ApiApp)
-import qualified Boilerplate.HealthChecks.Api as HealthChecks
+import Boilerplate.App (HttpApp)
+import qualified Boilerplate.HealthChecks.Http as HealthChecks
 import Control.Lens ((.~), (?~))
 import Data.Function ((&))
 import Data.OpenApi (OpenApi)
@@ -27,7 +27,7 @@ type Api =
   HealthChecks
 
 
-server :: ServerT Api ApiApp
+server :: ServerT Api HttpApp
 server =
   HealthChecks.server
 
@@ -49,6 +49,6 @@ openApi =
         & tagRoutes (Proxy @HealthChecks) "Health Checks" "End points for checking the health of the API"
 
 
-serverWithSwagger :: ServerT ApiWithSwagger ApiApp
+serverWithSwagger :: ServerT ApiWithSwagger HttpApp
 serverWithSwagger =
   swaggerSchemaUIServerT openApi :<|> server

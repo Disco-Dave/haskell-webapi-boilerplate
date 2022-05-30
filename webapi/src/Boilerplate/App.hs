@@ -2,7 +2,7 @@ module Boilerplate.App (
   AppData (..),
   App (..),
   runApp,
-  ApiApp (..),
+  HttpApp (..),
   liftApp,
   toHandler,
 ) where
@@ -87,8 +87,8 @@ instance Katip.KatipContext App where
      in App (local update m)
 
 
-newtype ApiApp a = ApiApp
-  { fromApiApp :: App a
+newtype HttpApp a = HttpApp
+  { fromHttpApp :: App a
   }
   deriving
     ( Functor
@@ -105,17 +105,17 @@ newtype ApiApp a = ApiApp
     )
 
 
-liftApp :: App a -> ApiApp a
+liftApp :: App a -> HttpApp a
 liftApp =
   coerce
 
 
-toHandler :: AppData -> ApiApp a -> Servant.Handler a
-toHandler appData (ApiApp app) =
+toHandler :: AppData -> HttpApp a -> Servant.Handler a
+toHandler appData (HttpApp app) =
   let unwrappedValue = UnliftIO.try $ runApp appData app
    in Servant.Handler $ ExceptT unwrappedValue
 
 
-instance MonadError Servant.ServerError ApiApp where
+instance MonadError Servant.ServerError HttpApp where
   throwError = UnliftIO.throwIO
   catchError = UnliftIO.catch

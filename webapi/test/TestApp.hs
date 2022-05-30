@@ -4,7 +4,7 @@ module TestApp (
 ) where
 
 import qualified Boilerplate
-import qualified Boilerplate.Api as Api
+import qualified Boilerplate.Http as Http
 import Boilerplate.App (AppData)
 import qualified Boilerplate.App as App
 import qualified Boilerplate.Config as Config
@@ -56,7 +56,7 @@ withTestApp = do
     appData <- ContT withAppData
 
     port <-
-      let waiApp = Api.makeWaiApplication False
+      let waiApp = Http.makeWaiApplication False
        in ContT $ Warp.testWithApplication (App.runApp appData waiApp)
 
     pure $ TestApp{..}

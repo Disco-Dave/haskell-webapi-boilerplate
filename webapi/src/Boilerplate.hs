@@ -4,7 +4,7 @@ module Boilerplate (
   start,
 ) where
 
-import qualified Boilerplate.Api as Api
+import qualified Boilerplate.Http as Http
 import Boilerplate.App (App, AppData (AppData))
 import qualified Boilerplate.App as App
 import Boilerplate.Config (Config)
@@ -31,4 +31,4 @@ run config app =
 
 start :: Config -> IO ()
 start config =
-  run config $ Api.start (Config.api config)
+  run config $ Http.start (Config.http config)

@@ -1,11 +1,11 @@
 {-# LANGUAGE QuasiQuotes #-}
 
-module Boilerplate.HealthChecks.Api (
+module Boilerplate.HealthChecks.Http (
   Api,
   server,
 ) where
 
-import Boilerplate.App (ApiApp)
+import Boilerplate.App (HttpApp)
 import Boilerplate.Database (withPostgresConnection)
 
 import qualified Database.PostgreSQL.Simple as Postgres
@@ -28,7 +28,7 @@ type GetIndex =
     :> GetNoContent
 
 
-getIndex :: ApiApp NoContent
+getIndex :: HttpApp NoContent
 getIndex =
   pure NoContent
 
@@ -40,7 +40,7 @@ type GetDatabases =
     :> GetNoContent
 
 
-getDatabases :: ApiApp NoContent
+getDatabases :: HttpApp NoContent
 getDatabases = do
   _ <-
     withPostgresConnection $ \connection ->
@@ -53,6 +53,6 @@ type Api =
   GetIndex :<|> GetDatabases
 
 
-server :: ServerT Api ApiApp
+server :: ServerT Api HttpApp
 server =
   getIndex :<|> getDatabases

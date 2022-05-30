@@ -1,4 +1,4 @@
-module Boilerplate.HealthChecks.ApiSpec (spec) where
+module Boilerplate.HealthChecks.HttpSpec (spec) where
 
 import qualified Network.HTTP.Client as Http
 import Test.Hspec (Spec, aroundAll, it, runIO, shouldBe)

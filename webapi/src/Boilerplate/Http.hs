@@ -1,11 +1,11 @@
-module Boilerplate.Api (
-  ApiConfig (..),
+module Boilerplate.Http (
+  HttpConfig (..),
   makeWaiApplication,
   start,
 ) where
 
-import qualified Boilerplate.Api.Middleware as Middleware
-import qualified Boilerplate.Api.Routes as Routes
+import qualified Boilerplate.Http.Middleware as Middleware
+import qualified Boilerplate.Http.Routes as Routes
 import Boilerplate.App (App)
 import qualified Boilerplate.App as App
 import Control.Lens
@@ -20,7 +20,7 @@ import Servant (hoistServer, serve)
 import qualified UnliftIO
 
 
-data ApiConfig = ApiConfig
+data HttpConfig = HttpConfig
   { useSwagger :: Bool
   , port :: Warp.Port
   }
@@ -46,8 +46,8 @@ makeWaiApplication useSwagger = do
       else toApplication (Proxy @Routes.Api) Routes.server
 
 
-start :: ApiConfig -> App ()
-start ApiConfig{..} = do
+start :: HttpConfig -> App ()
+start HttpConfig{..} = do
   application <- makeWaiApplication useSwagger
 
   UnliftIO.withRunInIO $ \toIO ->
