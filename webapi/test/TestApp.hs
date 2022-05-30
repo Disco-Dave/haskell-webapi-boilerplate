@@ -49,8 +49,10 @@ withAppData =
 
 
 withTestApp :: (TestApp -> IO a) -> IO a
-withTestApp =
+withTestApp = do
   runContT $ do
+    liftIO $ putStrLn "called"
+
     appData <- ContT withAppData
 
     port <-
