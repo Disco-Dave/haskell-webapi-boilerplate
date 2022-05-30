@@ -20,6 +20,7 @@ import Servant (
   type (:<|>) ((:<|>)),
   type (:>),
  )
+import Data.Text (Text)
 
 
 type GetIndex =
@@ -44,7 +45,11 @@ getDatabases :: ApiApp NoContent
 getDatabases = do
   _ <-
     withPostgresConnection $ \connection ->
-      Postgres.query_ @(Postgres.Only Int) connection [sql| SELECT 1 |]
+      Postgres.query_ @(Postgres.Only Text) connection 
+        [sql| 
+          SELECT note 
+          FROM public.examples;
+        |]
 
   pure NoContent
 

@@ -1,26 +1,28 @@
-create function pg_temp.create_user_if_not_exists (_password text)
-    returns void
-    as
-    $$
-begin
-    if exists (
-        select
-        from
+CREATE FUNCTION pg_temp.create_user_if_not_exists (_password text)
+    RETURNS void
+    AS $$
+BEGIN
+    IF EXISTS (
+        SELECT
+        FROM
             pg_catalog.pg_roles
-        where
-            rolname = 'reporting') then
-    raise notice 'Role "reporting" already exists. Skipping.';
-else
-    begin
+        WHERE
+            rolname = 'reporting') THEN
+    RAISE NOTICE 'Role "reporting" already exists. Skipping.';
+ELSE
+    BEGIN
         -- nested block
-        execute format('create role reporting login password %L;' , _password);
-    exception
-        when duplicate_object then
-            raise notice 'Role "reporting" was just created by a concurrent transaction. Skipping.';
-    end;
-end if;
-end $$
-language plpgsql;
+        EXECUTE format('create role reporting login password %L;', _password);
+    EXCEPTION
+        WHEN duplicate_object THEN
+            RAISE NOTICE 'Role "reporting" was just created by a concurrent transaction. Skipping.';
+    END;
+END IF;
+END
+$$
+LANGUAGE plpgsql;
 
-select
+SELECT
     pg_temp.create_user_if_not_exists (:'password');
+
+GRANT readonly TO reporting;
