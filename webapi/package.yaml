@@ -19,6 +19,7 @@ ghc-options:
 default-extensions:
   - AllowAmbiguousTypes
   - DataKinds
+  - DeriveGeneric
   - DerivingVia
   - FlexibleContexts
   - GeneralizedNewtypeDeriving
@@ -38,6 +39,7 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
+    - aeson
     - bytestring
     - envparse
     - exceptions

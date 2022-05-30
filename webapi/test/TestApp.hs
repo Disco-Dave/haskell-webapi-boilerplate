@@ -4,11 +4,11 @@ module TestApp (
 ) where
 
 import qualified Boilerplate
-import qualified Boilerplate.Http as Http
 import Boilerplate.App (AppData)
 import qualified Boilerplate.App as App
 import qualified Boilerplate.Config as Config
 import qualified Boilerplate.Database as DatabaseConfig (DatabaseConfig (..))
+import qualified Boilerplate.Http as Http
 import qualified Boilerplate.Logging as LoggingConfig (LoggingConfig (..))
 import Control.Monad.Cont (ContT (ContT, runContT))
 import Control.Monad.IO.Class (liftIO)
@@ -51,8 +51,6 @@ withAppData =
 withTestApp :: (TestApp -> IO a) -> IO a
 withTestApp = do
   runContT $ do
-    liftIO $ putStrLn "called"
-
     appData <- ContT withAppData
 
     port <-

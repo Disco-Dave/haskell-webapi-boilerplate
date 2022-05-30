@@ -19,6 +19,10 @@ library
       Boilerplate.Http.Middleware
       Boilerplate.Http.Routes
       Boilerplate.Logging
+      Boilerplate.Todos.Database
+      Boilerplate.Todos.Http
+      Boilerplate.Todos.Task
+      Boilerplate.Todos.Task.Description
   other-modules:
       Paths_boilerplate
   hs-source-dirs:
@@ -26,6 +30,7 @@ library
   default-extensions:
       AllowAmbiguousTypes
       DataKinds
+      DeriveGeneric
       DerivingVia
       FlexibleContexts
       GeneralizedNewtypeDeriving
@@ -40,7 +45,8 @@ library
       TypeOperators
   ghc-options: -Weverything -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missed-specialisations -Wno-missing-deriving-strategies -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-monomorphism-restriction -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
     , bytestring
     , envparse
     , exceptions
@@ -70,6 +76,7 @@ executable boilerplate
   default-extensions:
       AllowAmbiguousTypes
       DataKinds
+      DeriveGeneric
       DerivingVia
       FlexibleContexts
       GeneralizedNewtypeDeriving
@@ -102,6 +109,7 @@ test-suite boilerplate-test
   default-extensions:
       AllowAmbiguousTypes
       DataKinds
+      DeriveGeneric
       DerivingVia
       FlexibleContexts
       GeneralizedNewtypeDeriving

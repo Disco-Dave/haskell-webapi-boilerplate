@@ -7,6 +7,7 @@ module Boilerplate.Http.Routes (
 
 import Boilerplate.App (HttpApp)
 import qualified Boilerplate.HealthChecks.Http as HealthChecks
+import qualified Boilerplate.Todos.Http as Todos
 import Control.Lens ((.~), (?~))
 import Data.Function ((&))
 import Data.OpenApi (OpenApi)
@@ -21,15 +22,18 @@ import Servant.Swagger.UI (SwaggerSchemaUI, swaggerSchemaUIServerT)
 
 
 type HealthChecks = "health-checks" :> HealthChecks.Api
+type Todos = "todos" :> Todos.Api
 
 
 type Api =
   HealthChecks
+    :<|> Todos
 
 
 server :: ServerT Api HttpApp
 server =
   HealthChecks.server
+    :<|> Todos.server
 
 
 type ApiWithSwagger =
@@ -47,6 +51,7 @@ openApi =
         & OpenApi.info . OpenApi.description ?~ "Template for common boilerplate I find I need when starting a web api"
         & OpenApi.info . OpenApi.version .~ Text.pack (showVersion version)
         & tagRoutes (Proxy @HealthChecks) "Health Checks" "End points for checking the health of the API"
+        & tagRoutes (Proxy @Todos) "Todos" "End points for managing todo items"
 
 
 serverWithSwagger :: ServerT ApiWithSwagger HttpApp
