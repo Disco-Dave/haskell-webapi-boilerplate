@@ -16,6 +16,7 @@ library
       Boilerplate.Database
       Boilerplate.HealthChecks.Http
       Boilerplate.Http
+      Boilerplate.Http.Helpers
       Boilerplate.Http.Middleware
       Boilerplate.Http.Routes
       Boilerplate.Logging
@@ -23,6 +24,7 @@ library
       Boilerplate.Todos.Http
       Boilerplate.Todos.Task
       Boilerplate.Todos.Task.Description
+      Boilerplate.Todos.Task.NewStatus
   other-modules:
       Paths_boilerplate
   hs-source-dirs:
@@ -30,8 +32,10 @@ library
   default-extensions:
       AllowAmbiguousTypes
       DataKinds
+      DeriveFunctor
       DeriveGeneric
       DerivingVia
+      DuplicateRecordFields
       FlexibleContexts
       GeneralizedNewtypeDeriving
       MultiParamTypeClasses
@@ -76,8 +80,10 @@ executable boilerplate
   default-extensions:
       AllowAmbiguousTypes
       DataKinds
+      DeriveFunctor
       DeriveGeneric
       DerivingVia
+      DuplicateRecordFields
       FlexibleContexts
       GeneralizedNewtypeDeriving
       MultiParamTypeClasses
@@ -109,8 +115,10 @@ test-suite boilerplate-test
   default-extensions:
       AllowAmbiguousTypes
       DataKinds
+      DeriveFunctor
       DeriveGeneric
       DerivingVia
+      DuplicateRecordFields
       FlexibleContexts
       GeneralizedNewtypeDeriving
       MultiParamTypeClasses

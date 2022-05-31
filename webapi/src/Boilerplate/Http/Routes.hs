@@ -50,8 +50,8 @@ openApi =
         & OpenApi.info . OpenApi.title .~ "Boilerplate"
         & OpenApi.info . OpenApi.description ?~ "Template for common boilerplate I find I need when starting a web api"
         & OpenApi.info . OpenApi.version .~ Text.pack (showVersion version)
-        & tagRoutes (Proxy @HealthChecks) "Health Checks" "End points for checking the health of the API"
-        & tagRoutes (Proxy @Todos) "Todos" "End points for managing todo items"
+        & tagRoutes (Proxy @HealthChecks) "Health Checks" "End points for checking the health of the API."
+        & tagRoutes (Proxy @Todos) "Todos" "End points for managing todo items. Serves as a little more complex example to work from compared to the health check end points."
 
 
 serverWithSwagger :: ServerT ApiWithSwagger HttpApp

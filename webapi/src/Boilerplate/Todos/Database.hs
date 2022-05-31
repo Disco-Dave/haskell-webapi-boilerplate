@@ -4,14 +4,19 @@ module Boilerplate.Todos.Database (
   InvalidDescription (..),
   queryAllTasks,
   queryTaskById,
+  TaskNotFoundError (..),
+  insertTask,
+  updateStatus,
 ) where
 
 import Boilerplate.App (App (..))
 import Boilerplate.Database (withPostgresConnection)
-import Boilerplate.Todos.Task (Task (Task))
+import Boilerplate.Todos.Task (Task (Task), TaskId (TaskId))
 import qualified Boilerplate.Todos.Task as Task
 import Boilerplate.Todos.Task.Description (Description)
 import qualified Boilerplate.Todos.Task.Description as Description
+import Boilerplate.Todos.Task.NewStatus (NewStatus)
+import qualified Boilerplate.Todos.Task.NewStatus as NewStatus
 import Control.Exception (Exception)
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -104,11 +109,10 @@ queryAllTasks = do
           SELECT
             task.task_id
             ,task.description
-            ,status.task_status_id AS status_id
-            ,status.updated_at AS status_timestamp
+            ,task.task_status_id
+            ,task.updated_at
           FROM public.tasks AS task
-            LEFT JOIN public.task_statuses AS status
-              ON status.task_id = task.task_id;
+          WHERE COALESCE(task.task_status_id, 'x') <> 'r';
         |]
 
       rowParser = do
@@ -130,12 +134,11 @@ queryTaskById taskId = do
         [sql|
           SELECT
             task.description
-            ,status.task_status_id AS status_id
-            ,status.updated_at AS status_timestamp
+            ,task.task_status_id
+            ,task.updated_at
           FROM public.tasks AS task
-            LEFT JOIN public.task_statuses AS status
-              ON status.task_id = task.task_id
-          WHERE task.task_id = ?;
+          WHERE task.task_id = ?
+            AND COALESCE(task.task_status_id, 'x') <> 'r';
         |]
 
       rowParser = do
@@ -161,3 +164,62 @@ queryTaskById taskId = do
       Just <$> rowToTask row
     _ ->
       pure Nothing
+
+
+insertTask :: Description -> App TaskId
+insertTask description = do
+  let query =
+        [sql|
+          INSERT into public.tasks (description)
+          VALUES (?)
+          RETURNING task_id;
+         |]
+
+      params = Postgres.Only $ Description.toText description
+
+  [Postgres.Only taskId] <-
+    withPostgresConnection $ \connection ->
+      Postgres.query connection query params
+
+  pure $ TaskId taskId
+
+
+data TaskNotFoundError = TaskNotFoundError
+  deriving (Show, Eq)
+
+
+updateStatus :: TaskId -> NewStatus -> App (Either TaskNotFoundError ())
+updateStatus taskId newStatus = do
+  let query =
+        [sql|
+            UPDATE public.tasks
+            SET 
+              task_status_id = ?
+              ,updated_at = 
+                  CASE
+                    WHEN task_status_id <> ? THEN CURRENT_TIMESTAMP
+                    ELSE updated_at
+                  END
+            WHERE task_id = ?
+              AND COALESCE(task_status_id, 'x') <> 'r'
+            RETURNING task_id;
+        |]
+
+      params =
+        let statusParam =
+              case newStatus of
+                NewStatus.Start -> "s" :: Text
+                NewStatus.Finish -> "f"
+                NewStatus.Remove -> "r"
+         in ( statusParam
+            , statusParam
+            , Task.fromTaskId taskId
+            )
+
+  rows <- withPostgresConnection $ \connection ->
+    Postgres.query @_ @(Postgres.Only Integer) connection query params
+
+  pure $
+    if null rows
+      then Left TaskNotFoundError
+      else Right ()

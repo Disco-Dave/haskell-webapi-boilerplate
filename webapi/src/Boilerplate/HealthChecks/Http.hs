@@ -1,6 +1,10 @@
 {-# LANGUAGE QuasiQuotes #-}
 
 module Boilerplate.HealthChecks.Http (
+  GetIndex,
+  getIndex,
+  GetDatabases,
+  getDatabases,
   Api,
   server,
 ) where

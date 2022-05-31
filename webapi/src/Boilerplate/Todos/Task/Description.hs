@@ -46,5 +46,5 @@ instance OpenApi.ToSchema Description where
     pure $
       textNamedSchema
         & OpenApi.name ?~ "Description"
-        & OpenApi.schema . OpenApi.description ?~ "Describes the task that needs to be done."
+        & OpenApi.schema . OpenApi.description ?~ "Describes the task that needs to be done. Must be between 1 and 500 characters in length."
         & OpenApi.schema . OpenApi.example ?~ Aeson.toJSON (Description "Clean the garage.")

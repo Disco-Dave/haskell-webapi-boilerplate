@@ -39,7 +39,7 @@ services:
         target: /usr/local/etc/sqlx/migrate.sh
         read_only: true
     environment:
-      BOILERPLATE_MIGRATE_DATABASE_URL: postgres://postgres@database:5432/boilerplate?password=${BOILERPLATE_MIGRATE_WEBSERVER_USER_PASSWORD:-password}
+      BOILERPLATE_MIGRATE_DATABASE_URL: postgres://postgres@database:5432/boilerplate?password=password
       BOILERPLATE_MIGRATE_WEBSERVER_USER_PASSWORD: ${BOILERPLATE_MIGRATE_WEBSERVER_USER_PASSWORD:-password}
       BOILERPLATE_MIGRATE_REPORTING_USER_PASSWORD: ${BOILERPLATE_MIGRATE_REPORTING_USER_PASSWORD:-password}
     command:

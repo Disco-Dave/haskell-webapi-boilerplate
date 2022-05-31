@@ -1,6 +1,7 @@
 CREATE TABLE public.tasks (
     task_id bigserial PRIMARY KEY,
     description text NOT NULL,
+    task_status_id char NULL REFERENCES public.task_status_lookup(task_status_id),
     created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

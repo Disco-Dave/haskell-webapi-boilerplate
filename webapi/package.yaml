@@ -19,8 +19,10 @@ ghc-options:
 default-extensions:
   - AllowAmbiguousTypes
   - DataKinds
+  - DeriveFunctor
   - DeriveGeneric
   - DerivingVia
+  - DuplicateRecordFields
   - FlexibleContexts
   - GeneralizedNewtypeDeriving
   - MultiParamTypeClasses
