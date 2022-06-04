@@ -5,7 +5,10 @@ module Boilerplate.Logging (
 ) where
 
 import Control.Exception (bracket)
+import qualified Data.Text as Text
+import Data.Version (showVersion)
 import qualified Katip
+import Paths_boilerplate (version)
 import System.IO (stdout)
 
 
@@ -44,11 +47,15 @@ withLoggingData LoggingConfig{..} use =
                 verbosity
 
             Katip.registerScribe "stdout" scribe Katip.defaultScribeSettings logEnv
+
+      initialContext =
+        let payload = Katip.sl "version" (Text.pack (showVersion version))
+         in Katip.liftPayload payload
    in bracket makeLogEnv Katip.closeScribes $ \logEnv ->
         let loggingData =
               LoggingData
-                { namespace = ""
-                , context = mempty
+                { namespace = Katip.Namespace []
+                , context = initialContext
                 , logEnv = logEnv
                 }
          in use loggingData

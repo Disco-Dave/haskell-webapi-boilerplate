@@ -8,10 +8,10 @@ module Boilerplate.Database (
   withPostgresConnection,
 ) where
 
-import Boilerplate.App (AppData)
+import Boilerplate.App (App)
 import qualified Boilerplate.App as App
 import Control.Monad.IO.Class (MonadIO (liftIO))
-import Control.Monad.Reader (MonadReader, asks)
+import Control.Monad.Reader (asks)
 import Data.ByteString (ByteString)
 import Data.Coerce (coerce)
 import Data.Pool (Pool)
@@ -66,7 +66,7 @@ withPostgresConnectionPool DatabaseConfig{..} use =
    in UnliftIO.bracket makePool Pool.destroyAllResources use
 
 
-withPostgresConnection :: (MonadIO m, MonadReader AppData m) => (Postgres.Connection -> IO a) -> m a
+withPostgresConnection :: (Postgres.Connection -> IO a) -> App a
 withPostgresConnection use = do
   pool <- asks App.postgresConnectionPool
   liftIO $ Pool.withResource pool use

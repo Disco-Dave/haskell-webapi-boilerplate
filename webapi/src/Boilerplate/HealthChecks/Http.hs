@@ -24,6 +24,7 @@ import Servant (
   type (:<|>) ((:<|>)),
   type (:>),
  )
+import qualified Boilerplate.App as App
 
 
 type GetIndex =
@@ -47,7 +48,7 @@ type GetDatabases =
 getDatabases :: HttpApp NoContent
 getDatabases = do
   _ <-
-    withPostgresConnection $ \connection ->
+    App.liftApp . withPostgresConnection $ \connection ->
       Postgres.query_ @(Postgres.Only Int) connection [sql| SELECT 1 |]
 
   pure NoContent

@@ -4,10 +4,10 @@ module Boilerplate.Http (
   start,
 ) where
 
-import qualified Boilerplate.Http.Middleware as Middleware
-import qualified Boilerplate.Http.Routes as Routes
 import Boilerplate.App (App)
 import qualified Boilerplate.App as App
+import qualified Boilerplate.Http.Middleware as Middleware
+import qualified Boilerplate.Http.Routes as Routes
 import Control.Lens
 import Control.Monad (when)
 import Control.Monad.Reader (ask)
@@ -47,21 +47,22 @@ makeWaiApplication useSwagger = do
 
 
 start :: HttpConfig -> App ()
-start HttpConfig{..} = do
-  application <- makeWaiApplication useSwagger
+start HttpConfig{..} = 
+  Katip.katipAddNamespace "http" $ do
+    application <- makeWaiApplication useSwagger
 
-  UnliftIO.withRunInIO $ \toIO ->
-    let beforeMainLoop = do
-          let uri = "http://localhost:" <> Katip.ls (show port)
+    UnliftIO.withRunInIO $ \toIO ->
+      let beforeMainLoop = do
+            let uri = "http://localhost:" <> Katip.ls (show port)
 
-          toIO . Katip.logLocM Katip.InfoS $ "Server running at " <> uri
+            toIO . Katip.logLocM Katip.InfoS $ "Server running at " <> uri
 
-          when useSwagger $
-            toIO . Katip.logLocM Katip.InfoS $ "Visit Swagger at " <> uri <> "/docs"
+            when useSwagger $
+              toIO . Katip.logLocM Katip.InfoS $ "Visit Swagger at " <> uri <> "/docs"
 
-        settings =
-          Warp.defaultSettings
-            & Warp.setBeforeMainLoop beforeMainLoop
-            & Warp.setPort port
-            & Warp.setOnException (\_ _ -> pure ()) -- omit logging because middleware should have done this already
-     in Warp.runSettings settings application
+          settings =
+            Warp.defaultSettings
+              & Warp.setBeforeMainLoop beforeMainLoop
+              & Warp.setPort port
+              & Warp.setOnException (\_ _ -> pure ()) -- omit logging because middleware should have done this already
+       in Warp.runSettings settings application

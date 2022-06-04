@@ -3,14 +3,7 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    hackage: katip-wai-0.1.1.0@sha256:8390a79450df250a7faa9c0867357dab8b200f0c78726bf9167ed864d222f293,2180
-    pantry-tree:
-      size: 657
-      sha256: 9242099569e537554f831f6132170b08732caf7ef5cda0c243875ebb760d5193
-  original:
-    hackage: katip-wai-0.1.1.0@sha256:8390a79450df250a7faa9c0867357dab8b200f0c78726bf9167ed864d222f293,2180
+packages: []
 snapshots:
 - completed:
     size: 618507
