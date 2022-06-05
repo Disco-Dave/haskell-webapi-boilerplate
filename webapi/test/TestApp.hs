@@ -32,9 +32,8 @@ withAppData =
     let databaseConfig =
           (Config.database config)
             { DatabaseConfig.url = tempDatabaseUrl
-            , DatabaseConfig.numberOfStripes = 1
-            , DatabaseConfig.unusedConnectionTimeout = 1
-            , DatabaseConfig.maxConnectionsPerStripe = 1
+            , DatabaseConfig.poolCacheTtl = 1
+            , DatabaseConfig.poolMaxResources = 1
             }
         loggingConfig =
           (Config.logging config)

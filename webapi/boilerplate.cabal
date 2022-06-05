@@ -1,138 +1,148 @@
-cabal-version: 1.12
+cabal-version: 3.0
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
---
--- see: https://github.com/sol/hpack
+name: boilerplate
+version: 0.1.0.0
+build-type: Simple
 
-name:           boilerplate
-version:        0.1.0.0
-build-type:     Simple
+
+common shared
+  default-language: Haskell2010
+
+  default-extensions:
+    AllowAmbiguousTypes
+    DataKinds
+    DeriveFunctor
+    DeriveGeneric
+    DerivingVia
+    DuplicateRecordFields
+    FlexibleContexts
+    GeneralizedNewtypeDeriving
+    MultiParamTypeClasses
+    NamedFieldPuns
+    NumericUnderscores
+    OverloadedStrings
+    RecordWildCards
+    ScopedTypeVariables
+    StrictData
+    TypeApplications
+    TypeOperators
+
+  ghc-options:
+    -Weverything 
+    -Wno-all-missed-specialisations 
+    -Wno-identities
+    -Wno-implicit-prelude 
+    -Wno-missed-specialisations 
+    -Wno-missing-deriving-strategies
+    -Wno-missing-exported-signatures 
+    -Wno-missing-import-lists 
+    -Wno-missing-local-signatures 
+    -Wno-monomorphism-restriction 
+    -Wno-safe 
+    -Wno-unsafe 
+
+  if impl(ghc >= 8.10)
+    ghc-options:
+      -Wno-missing-safe-haskell-mode
+      -Wno-prepositive-qualified-module
+
+  if impl(ghc >= 9.2)
+    ghc-options:
+      -Wno-missing-kind-signatures
+
+  build-depends:
+    , base >=4.7 && <5
+
+  autogen-modules:
+    Paths_boilerplate
+    
+  other-modules:
+    Paths_boilerplate
+
+
+common shared-exe
+  ghc-options:
+    -threaded 
+    -rtsopts 
+    -with-rtsopts=-N
+
 
 library
+  import: 
+    , shared
+
+  hs-source-dirs: src
+
   exposed-modules:
-      Boilerplate
-      Boilerplate.App
-      Boilerplate.Config
-      Boilerplate.Database
-      Boilerplate.HealthChecks.Http
-      Boilerplate.Http
-      Boilerplate.Http.Helpers
-      Boilerplate.Http.Middleware
-      Boilerplate.Http.Routes
-      Boilerplate.Logging
-      Boilerplate.Todos.Database
-      Boilerplate.Todos.Http
-      Boilerplate.Todos.Task
-      Boilerplate.Todos.Task.Description
-      Boilerplate.Todos.Task.NewStatus
-  other-modules:
-      Paths_boilerplate
-  hs-source-dirs:
-      src
-  default-extensions:
-      AllowAmbiguousTypes
-      DataKinds
-      DeriveFunctor
-      DeriveGeneric
-      DerivingVia
-      DuplicateRecordFields
-      FlexibleContexts
-      GeneralizedNewtypeDeriving
-      MultiParamTypeClasses
-      NamedFieldPuns
-      NumericUnderscores
-      OverloadedStrings
-      RecordWildCards
-      ScopedTypeVariables
-      StrictData
-      TypeApplications
-      TypeOperators
-  ghc-options: -Weverything -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missed-specialisations -Wno-missing-deriving-strategies -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-monomorphism-restriction -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe
+    Boilerplate
+    Boilerplate.App
+    Boilerplate.Config
+    Boilerplate.Database
+    Boilerplate.HealthChecks.Http
+    Boilerplate.Http
+    Boilerplate.Http.Helpers
+    Boilerplate.Http.Middleware
+    Boilerplate.Http.Routes
+    Boilerplate.Logging
+    Boilerplate.Todos.Database
+    Boilerplate.Todos.Http
+    Boilerplate.Todos.Task
+    Boilerplate.Todos.Task.Description
+    Boilerplate.Todos.Task.NewStatus
+
   build-depends:
-      aeson
-    , base >=4.7 && <5
-    , bytestring
-    , envparse
-    , exceptions
-    , katip
-    , katip-wai
-    , lens
-    , mtl
-    , openapi3
-    , postgresql-simple
-    , resource-pool
-    , servant-openapi3
-    , servant-server
-    , servant-swagger-ui
-    , text
-    , time
-    , unliftio
-    , wai
-    , warp
-  default-language: Haskell2010
+    , aeson ^>= 2.0.3
+    , bytestring ^>= 0.11.3.1
+    , envparse ^>= 0.4.1
+    , exceptions ^>= 0.10.4
+    , katip ^>= 0.8.7
+    , katip-wai ^>= 0.1.2.0
+    , lens ^>= 5.1.1
+    , mtl ^>= 2.2.2
+    , openapi3 ^>= 3.2.2
+    , postgresql-simple ^>= 0.6.4
+    , resource-pool ^>= 0.3.0.0
+    , servant-openapi3 ^>= 2.0.1
+    , servant-server ^>= 0.19.1
+    , servant-swagger-ui ^>= 0.3.5
+    , text ^>= 2.0
+    , time ^>=1.9.3
+    , unliftio ^>= 0.2.22
+    , wai ^>= 3.2.3
+    , warp ^>= 3.3.21
+
 
 executable boilerplate
+  import:
+    , shared
+    , shared-exe
+
+  hs-source-dirs: app
   main-is: Main.hs
-  other-modules:
-      Paths_boilerplate
-  hs-source-dirs:
-      app
-  default-extensions:
-      AllowAmbiguousTypes
-      DataKinds
-      DeriveFunctor
-      DeriveGeneric
-      DerivingVia
-      DuplicateRecordFields
-      FlexibleContexts
-      GeneralizedNewtypeDeriving
-      MultiParamTypeClasses
-      NamedFieldPuns
-      NumericUnderscores
-      OverloadedStrings
-      RecordWildCards
-      ScopedTypeVariables
-      StrictData
-      TypeApplications
-      TypeOperators
-  ghc-options: -Weverything -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missed-specialisations -Wno-missing-deriving-strategies -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-monomorphism-restriction -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -threaded -rtsopts -with-rtsopts=-N
+
   build-depends:
-      base >=4.7 && <5
     , boilerplate
-  default-language: Haskell2010
+
 
 test-suite boilerplate-test
+  import: 
+    , shared
+    , shared-exe
+
   type: exitcode-stdio-1.0
+  hs-source-dirs: test
   main-is: Main.hs
+
   other-modules:
-      Boilerplate.HealthChecks.HttpSpec
-      Spec
-      TestApp
-      TestApp.Database
-      Paths_boilerplate
-  hs-source-dirs:
-      test
-  default-extensions:
-      AllowAmbiguousTypes
-      DataKinds
-      DeriveFunctor
-      DeriveGeneric
-      DerivingVia
-      DuplicateRecordFields
-      FlexibleContexts
-      GeneralizedNewtypeDeriving
-      MultiParamTypeClasses
-      NamedFieldPuns
-      NumericUnderscores
-      OverloadedStrings
-      RecordWildCards
-      ScopedTypeVariables
-      StrictData
-      TypeApplications
-      TypeOperators
-  ghc-options: -Weverything -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missed-specialisations -Wno-missing-deriving-strategies -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-monomorphism-restriction -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -threaded -rtsopts -with-rtsopts=-N
+    Boilerplate.HealthChecks.HttpSpec
+    Spec
+    TestApp
+    TestApp.Database
+
+  build-tool-depends:
+    , hspec-discover:hspec-discover
+
   build-depends:
-      base >=4.7 && <5
     , boilerplate
     , bytestring
     , containers
@@ -147,4 +157,3 @@ test-suite boilerplate-test
     , typed-process
     , unliftio
     , warp
-  default-language: Haskell2010

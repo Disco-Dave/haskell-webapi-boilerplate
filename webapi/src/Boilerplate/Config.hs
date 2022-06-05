@@ -3,13 +3,12 @@ module Boilerplate.Config (
   fromEnvironment,
 ) where
 
-import Boilerplate.Database (DatabaseConfig (DatabaseConfig), UnusedConnectionTimeout (UnusedConnectionTimeout))
+import Boilerplate.Database (DatabaseConfig (DatabaseConfig))
 import Boilerplate.Http (HttpConfig (HttpConfig))
 import Boilerplate.Logging (LoggingConfig (LoggingConfig))
 import Control.Monad ((<=<))
 import Data.Foldable (find)
 import qualified Data.Text as Text
-import Data.Time (secondsToNominalDiffTime)
 import qualified Env
 import qualified Katip
 
@@ -65,9 +64,8 @@ parseDatabase =
   Env.prefixed "DATABASE_" $
     DatabaseConfig
       <$> Env.var (Env.nonempty <=< Env.str) "URL" (Env.help "Postgres Connection URI")
-      <*> Env.var Env.auto "NUMBER_OF_STRIPES" (Env.help "Total number of stripes")
-      <*> fmap (UnusedConnectionTimeout . secondsToNominalDiffTime) (Env.var Env.auto "UNUSED_CONNECTION_TIMEOUT" (Env.help "How long in seconds a unused connection is kept open."))
-      <*> Env.var Env.auto "MAX_CONNECTIONS_PER_STRIPE" (Env.help "Total number of connections per stripes")
+      <*> Env.var Env.auto "POOL_CACHE_TTL" (Env.help "How long to keep an unused connection open for in seconds.")
+      <*> Env.var Env.auto "POOL_MAX_RESOURCES" (Env.help "Upper limit of connections that can be open at one time.")
 
 
 fromEnvironment :: IO Config

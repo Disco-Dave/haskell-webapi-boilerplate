@@ -1,9 +1,8 @@
 module Boilerplate.Database (
   DatabaseUrl (..),
-  NumberOfStripes (..),
-  UnusedConnectionTimeout (..),
-  MaxConnectionsPerStripe (..),
   DatabaseConfig (..),
+  PoolCacheTtl (..),
+  PoolMaxResources (..),
   withPostgresConnectionPool,
   withPostgresConnection,
 ) where
@@ -17,7 +16,6 @@ import Data.Coerce (coerce)
 import Data.Pool (Pool)
 import qualified Data.Pool as Pool
 import Data.String (IsString)
-import Data.Time (NominalDiffTime)
 import qualified Database.PostgreSQL.Simple as Postgres
 import qualified UnliftIO
 
@@ -28,41 +26,35 @@ newtype DatabaseUrl = DatabaseUrl
   deriving (Show, Eq, IsString) via ByteString
 
 
-newtype NumberOfStripes = NumberOfStripes
-  { fromNumberOfStripes :: Int
+newtype PoolCacheTtl = PoolCacheTtl
+  { fromPoolCacheTtl :: Double
   }
-  deriving (Show, Eq, Num, Read) via Int
+  deriving (Show, Eq, Num, Read) via Double
 
 
-newtype UnusedConnectionTimeout = UnusedConnectionTimeout
-  { fromUnusedConnectionTimeout :: NominalDiffTime
-  }
-  deriving (Show, Eq, Num, Read) via NominalDiffTime
-
-
-newtype MaxConnectionsPerStripe = MaxConnectionsPerStripe
-  { fromMaxConnectionsPerStripe :: Int
+newtype PoolMaxResources = PoolMaxResources
+  { fromPoolMaxResources :: Int
   }
   deriving (Show, Eq, Num, Read) via Int
 
 
 data DatabaseConfig = DatabaseConfig
   { url :: DatabaseUrl
-  , numberOfStripes :: NumberOfStripes
-  , unusedConnectionTimeout :: UnusedConnectionTimeout
-  , maxConnectionsPerStripe :: MaxConnectionsPerStripe
+  , poolCacheTtl :: PoolCacheTtl
+  , poolMaxResources :: PoolMaxResources
   }
 
 
 withPostgresConnectionPool :: DatabaseConfig -> (Pool Postgres.Connection -> IO a) -> IO a
 withPostgresConnectionPool DatabaseConfig{..} use =
   let makePool =
-        Pool.createPool
-          (Postgres.connectPostgreSQL $ coerce url)
-          Postgres.close
-          (coerce numberOfStripes)
-          (coerce unusedConnectionTimeout)
-          (coerce maxConnectionsPerStripe)
+        Pool.newPool
+          Pool.PoolConfig
+            { createResource = Postgres.connectPostgreSQL $ coerce url
+            , freeResource = Postgres.close
+            , poolCacheTTL = coerce poolCacheTtl
+            , poolMaxResources = coerce poolMaxResources
+            }
    in UnliftIO.bracket makePool Pool.destroyAllResources use
 
 
