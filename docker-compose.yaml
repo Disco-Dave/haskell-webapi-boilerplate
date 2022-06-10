@@ -22,7 +22,7 @@ services:
     build:
       context: ./database
       args:
-        sqlx_version: ${BOILERPLATE_SQLX_VERSION:-0.5.13}
+        sqlx_version: 0.5.13
     depends_on:
       - database
     volumes:
