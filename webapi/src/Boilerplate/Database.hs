@@ -17,7 +17,7 @@ import Data.Pool (Pool)
 import qualified Data.Pool as Pool
 import Data.String (IsString)
 import qualified Database.PostgreSQL.Simple as Postgres
-import qualified UnliftIO
+import UnliftIO.Exception (bracket)
 
 
 newtype DatabaseUrl = DatabaseUrl
@@ -55,7 +55,7 @@ withPostgresConnectionPool DatabaseConfig{..} use =
             , poolCacheTTL = coerce poolCacheTtl
             , poolMaxResources = coerce poolMaxResources
             }
-   in UnliftIO.bracket makePool Pool.destroyAllResources use
+   in bracket makePool Pool.destroyAllResources use
 
 
 withPostgresConnection :: (Postgres.Connection -> IO a) -> App a

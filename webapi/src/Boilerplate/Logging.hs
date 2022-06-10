@@ -4,7 +4,7 @@ module Boilerplate.Logging (
   withLoggingData,
 ) where
 
-import Control.Exception (bracket)
+import UnliftIO.Exception (bracket)
 import qualified Data.Text as Text
 import Data.Version (showVersion)
 import qualified Katip

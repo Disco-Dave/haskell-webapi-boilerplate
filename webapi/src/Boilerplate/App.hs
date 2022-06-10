@@ -19,7 +19,7 @@ import qualified Database.PostgreSQL.Simple as Postgres
 import qualified Katip
 import qualified Servant
 import UnliftIO (MonadUnliftIO)
-import qualified UnliftIO
+import UnliftIO.Exception (catch, throwIO, try)
 
 
 data AppData = AppData
@@ -112,10 +112,10 @@ liftApp =
 
 toHandler :: AppData -> HttpApp a -> Servant.Handler a
 toHandler appData (HttpApp app) =
-  let unwrappedValue = UnliftIO.try $ runApp appData app
+  let unwrappedValue = try $ runApp appData app
    in Servant.Handler $ ExceptT unwrappedValue
 
 
 instance MonadError Servant.ServerError HttpApp where
-  throwError = UnliftIO.throwIO
-  catchError = UnliftIO.catch
+  throwError = throwIO
+  catchError = catch
