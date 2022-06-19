@@ -1,7 +1,10 @@
 FROM debian:bullseye-slim AS ghc-and-cabal
 
 ENV LANG=C.UTF-8
+ENV TZ=UTC
+
 ENV DEBIAN_FRONTEND=noninteractive
+
 ENV PATH=/root/.ghcup/bin:$PATH 
 
 RUN apt-get update \
@@ -40,6 +43,8 @@ RUN strip -s /build/bin/boilerplate
 FROM debian:bullseye-slim AS final
 
 ENV LANG=C.UTF-9
+ENV TZ=UTC
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
@@ -49,6 +54,6 @@ RUN apt-get update \
 
 COPY --from=build /build/bin/boilerplate /usr/local/bin/boilerplate
 
-USER 999:1000
+USER 1000:1000
 
 ENTRYPOINT [ "/usr/local/bin/boilerplate" ]
