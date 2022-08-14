@@ -1,17 +1,12 @@
 FROM debian:bullseye-slim AS ghc-and-cabal
 
+# Set the encoding to utf-8 and timezone to utc.
 ENV LANG=C.UTF-8
 ENV TZ=UTC
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-ENV PATH=/root/.ghcup/bin:$PATH 
-
 RUN apt-get update \
   && apt-get install -y binutils build-essential curl libffi-dev libffi7 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 libnuma-dev zlib1g-dev \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
+  && apt-get clean
 
 ARG GHCUP_VERSION=0.1.17.8
 RUN curl --proto '=https' --tlsv1.2 -sSf https://downloads.haskell.org/~ghcup/${GHCUP_VERSION}/x86_64-linux-ghcup-${GHCUP_VERSION} --output /usr/local/bin/ghcup \
@@ -22,6 +17,9 @@ RUN ghcup install ghc --set ${GHC_VERSION}
 
 ARG CABAL_VERSION=3.6.2.0
 RUN ghcup install cabal --set ${CABAL_VERSION}
+
+ENV PATH=/root/.ghcup/bin:$PATH 
+
 
 
 FROM ghc-and-cabal AS build
@@ -42,7 +40,7 @@ RUN strip -s /build/bin/boilerplate
 
 FROM debian:bullseye-slim AS final
 
-ENV LANG=C.UTF-9
+ENV LANG=C.UTF-8
 ENV TZ=UTC
 
 ENV DEBIAN_FRONTEND=noninteractive
